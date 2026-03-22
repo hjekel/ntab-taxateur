@@ -28,38 +28,217 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
   async function handleExport() {
     setExporting(true)
     try {
-      const html2canvas = (await import('html2canvas-pro')).default
       const { jsPDF } = await import('jspdf')
 
-      const element = reportRef.current
-      if (!element) return
-
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-      })
-
-      const imgData = canvas.toDataURL('image/png')
       const pdf = new jsPDF('p', 'mm', 'a4')
-      const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+      const W = pdf.internal.pageSize.getWidth()    // 210
+      const H = pdf.internal.pageSize.getHeight()    // 297
+      const M = 20 // margin
+      const cw = W - 2 * M // content width
+      let y = M
 
-      // Handle multi-page if content is tall
-      const pageHeight = pdf.internal.pageSize.getHeight()
-      let position = 0
+      // Colors
+      const blue = [0, 51, 153]     // #003399
+      const orange = [224, 85, 0]   // #E05500
+      const darkText = [51, 51, 51]
+      const lightText = [102, 102, 102]
 
-      if (pdfHeight <= pageHeight) {
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
-      } else {
-        let remainingHeight = pdfHeight
-        while (remainingHeight > 0) {
-          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight)
-          remainingHeight -= pageHeight
-          position -= pageHeight
-          if (remainingHeight > 0) pdf.addPage()
+      // ── HEADER BAR ──
+      pdf.setFillColor(...blue)
+      pdf.rect(0, 0, W, 40, 'F')
+
+      // NTAB logo block (white rounded rect)
+      pdf.setFillColor(255, 255, 255)
+      pdf.roundedRect(M, 8, 24, 24, 3, 3, 'F')
+      pdf.setFont('helvetica', 'bold')
+      pdf.setFontSize(10)
+      pdf.setTextColor(...blue)
+      pdf.text('NTAB', M + 12, 19, { align: 'center' })
+      // Orange accent line in logo
+      pdf.setFillColor(...orange)
+      pdf.rect(M + 4, 22, 16, 1.5, 'F')
+      // "Sinds 1904" in logo
+      pdf.setFontSize(4.5)
+      pdf.setTextColor(150, 150, 150)
+      pdf.text('SINDS 1904', M + 12, 28, { align: 'center' })
+
+      // Title text
+      pdf.setTextColor(255, 255, 255)
+      pdf.setFont('helvetica', 'bold')
+      pdf.setFontSize(18)
+      pdf.text('Taxatierapport', M + 30, 16)
+      pdf.setFontSize(8)
+      pdf.setFont('helvetica', 'normal')
+      pdf.text('NTAB - Nederlands Taxatie & Adviesbureau', M + 30, 23)
+      pdf.text('Opgericht 1904 \u00b7 ISO 27001 gecertificeerd', M + 30, 29)
+
+      // Right side - report info
+      pdf.setFontSize(8)
+      pdf.text(`Rapport #${reportNr.current}`, W - M, 16, { align: 'right' })
+      pdf.text(today, W - M, 23, { align: 'right' })
+
+      y = 50
+
+      // ── Helper functions ──
+      function sectionHeader(title) {
+        pdf.setFillColor(...blue)
+        pdf.rect(M, y, cw, 7, 'F')
+        pdf.setFont('helvetica', 'bold')
+        pdf.setFontSize(10)
+        pdf.setTextColor(255, 255, 255)
+        pdf.text(title, M + 3, y + 5)
+        y += 11
+      }
+
+      function row(label, value, bold = false) {
+        pdf.setFont('helvetica', 'normal')
+        pdf.setFontSize(9)
+        pdf.setTextColor(...lightText)
+        pdf.text(label, M + 2, y)
+        pdf.setTextColor(...darkText)
+        if (bold) pdf.setFont('helvetica', 'bold')
+        pdf.text(String(value), M + 60, y)
+        y += 5.5
+      }
+
+      function checkPage(need = 20) {
+        if (y + need > H - 25) {
+          addPageFooter()
+          pdf.addPage()
+          y = M
         }
       }
+
+      let pageNum = 1
+      function addPageFooter() {
+        pdf.setFillColor(...blue)
+        pdf.rect(0, H - 12, W, 12, 'F')
+        pdf.setFont('helvetica', 'normal')
+        pdf.setFontSize(7)
+        pdf.setTextColor(200, 200, 220)
+        pdf.text('NTAB - Nederlands Taxatie & Adviesbureau \u00b7 Sinds 1904 \u00b7 Vertrouwelijk', M, H - 5)
+        pdf.text(`Pagina ${pageNum}`, W - M, H - 5, { align: 'right' })
+        pageNum++
+      }
+
+      // ── 1. OBJECT IDENTIFICATIE ──
+      sectionHeader('1. Object Identificatie')
+      row('Categorie:', categoryLabel)
+      row('Subcategorie:', subcategoryLabel)
+      row('Merk:', asset.brand, true)
+      row('Model:', asset.model, true)
+      row('Bouwjaar:', String(asset.year))
+      row('Draaiuren:', asset.hours ? asset.hours.toLocaleString('nl-NL') : 'Onbekend')
+      row('Conditie:', `${conditionLabel} (${asset.condition}/5)`)
+      if (asset.notes) {
+        y += 2
+        row('Opmerkingen:', asset.notes)
+      }
+      y += 6
+
+      // ── 2. WAARDEBEPALING ──
+      checkPage(45)
+      sectionHeader('2. Waardebepaling')
+
+      // Table header
+      pdf.setFillColor(240, 242, 245)
+      pdf.rect(M, y - 1, cw, 7, 'F')
+      pdf.setFont('helvetica', 'bold')
+      pdf.setFontSize(8)
+      pdf.setTextColor(...darkText)
+      pdf.text('Waardebegrip', M + 3, y + 4)
+      pdf.text('AI-suggestie', M + 75, y + 4, { align: 'right' })
+      pdf.text('Taxateur', M + 110, y + 4, { align: 'right' })
+      pdf.text('Verschil', M + cw - 2, y + 4, { align: 'right' })
+      y += 9
+
+      // Table rows
+      Object.entries(valueTypeLabels).forEach(([key, label]) => {
+        const suggested = priceData.prices[key].mid
+        const adjusted = adjustment.adjustedPrices[key]
+        const diff = adjusted - suggested
+        const diffPct = suggested > 0 ? Math.round((diff / suggested) * 100) : 0
+
+        pdf.setFont('helvetica', 'normal')
+        pdf.setFontSize(9)
+        pdf.setTextColor(...darkText)
+        pdf.text(label, M + 3, y)
+        pdf.setTextColor(...lightText)
+        pdf.text(formatCurrency(suggested), M + 75, y, { align: 'right' })
+        pdf.setFont('helvetica', 'bold')
+        pdf.setTextColor(...blue)
+        pdf.text(formatCurrency(adjusted), M + 110, y, { align: 'right' })
+
+        if (diff !== 0) {
+          pdf.setFont('helvetica', 'normal')
+          pdf.setFontSize(8)
+          pdf.setTextColor(diff > 0 ? 34 : 220, diff > 0 ? 139 : 38, diff > 0 ? 34 : 38)
+          pdf.text(`${diff > 0 ? '+' : ''}${diffPct}%`, M + cw - 2, y, { align: 'right' })
+        } else {
+          pdf.setTextColor(...lightText)
+          pdf.setFontSize(8)
+          pdf.text('\u2013', M + cw - 2, y, { align: 'right' })
+        }
+
+        // Separator line
+        y += 2
+        pdf.setDrawColor(230, 230, 230)
+        pdf.line(M, y, M + cw, y)
+        y += 5
+      })
+      y += 4
+
+      // ── 3. ONDERBOUWING ──
+      checkPage(30)
+      sectionHeader('3. Onderbouwing')
+      row('Reden aanpassing:', adjustment.reason)
+      row('Betrouwbaarheid:', `${adjustment.confidence}%`)
+      if (adjustment.notes) {
+        y += 2
+        pdf.setFillColor(245, 247, 250)
+        const noteLines = pdf.splitTextToSize(adjustment.notes, cw - 10)
+        const noteH = noteLines.length * 4.5 + 8
+        pdf.roundedRect(M, y, cw, noteH, 2, 2, 'F')
+        pdf.setFont('helvetica', 'italic')
+        pdf.setFontSize(7)
+        pdf.setTextColor(...lightText)
+        pdf.text('Taxateur notities:', M + 4, y + 5)
+        pdf.setFont('helvetica', 'normal')
+        pdf.setFontSize(8)
+        pdf.setTextColor(...darkText)
+        pdf.text(noteLines, M + 4, y + 10)
+        y += noteH + 4
+      }
+      y += 4
+
+      // ── 4. BRONVERMELDING ──
+      checkPage(30)
+      sectionHeader('4. Bronvermelding')
+      row('Marktlistings geraadpleegd:', String(priceData.prices.dataPoints.marketListings))
+      row('Historische taxaties:', String(priceData.prices.dataPoints.historicalTaxaties))
+      row('Veilingresultaten:', String(priceData.prices.dataPoints.veilingResultaten))
+      y += 2
+      pdf.setFont('helvetica', 'italic')
+      pdf.setFontSize(7)
+      pdf.setTextColor(...lightText)
+      pdf.text('Bronnen: Mascus.nl, Troostwijk Auctions, BVA Auctions, Machineseeker.nl, NTAB Waardedatabase', M + 2, y)
+      y += 8
+
+      // ── DISCLAIMER ──
+      checkPage(20)
+      pdf.setDrawColor(...orange)
+      pdf.setLineWidth(0.5)
+      pdf.line(M, y, M + cw, y)
+      y += 5
+      pdf.setFont('helvetica', 'normal')
+      pdf.setFontSize(6.5)
+      pdf.setTextColor(...lightText)
+      const disclaimer = 'Disclaimer: Dit taxatierapport is opgesteld conform de richtlijnen van RICS en TMV. De genoemde waardes zijn gebaseerd op marktonderzoek, historische data en professioneel oordeel van de taxateur. NTAB aanvaardt geen aansprakelijkheid voor beslissingen die uitsluitend op dit rapport zijn gebaseerd. Dit is een demonstratieversie.'
+      const discLines = pdf.splitTextToSize(disclaimer, cw)
+      pdf.text(discLines, M, y)
+
+      // Footer
+      addPageFooter()
 
       pdf.save(`NTAB_Taxatierapport_${asset.brand}_${asset.model}_${reportNr.current}.pdf`)
     } catch (err) {
@@ -75,6 +254,14 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
     setSaved(true)
   }
 
+  function handleNewTaxatie() {
+    // Auto-save current asset before starting new one
+    if (!saved) {
+      onSaveAsset?.()
+    }
+    onNewAsset?.()
+  }
+
   function handlePrint() {
     window.print()
   }
@@ -86,10 +273,16 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
         {/* Header */}
         <div className="bg-ntab-primary text-white p-4 sm:p-6">
           <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs sm:text-sm opacity-75 mb-1">NTAB - Nederlands Taxatie &amp; Adviesbureau</div>
-              <h1 className="text-xl sm:text-2xl font-bold">Taxatierapport</h1>
-              <div className="text-xs sm:text-sm opacity-75 mt-1">Opgericht 1904 · ISO 27001 gecertificeerd</div>
+            <div className="flex items-center gap-3">
+              <div className="bg-white rounded-lg p-1.5 shrink-0 hidden sm:block">
+                <div className="text-ntab-primary font-black text-sm leading-none tracking-tight">NTAB</div>
+                <div className="w-10 h-0.5 bg-ntab-accent rounded mt-0.5 mx-auto" />
+              </div>
+              <div>
+                <div className="text-xs sm:text-sm opacity-75 mb-1">NTAB - Nederlands Taxatie &amp; Adviesbureau</div>
+                <h1 className="text-xl sm:text-2xl font-bold">Taxatierapport</h1>
+                <div className="text-xs sm:text-sm opacity-75 mt-1">Opgericht 1904 · ISO 27001 gecertificeerd</div>
+              </div>
             </div>
             <div className="text-right">
               <div className="text-2xl sm:text-3xl font-bold opacity-20">NTAB</div>
@@ -258,11 +451,11 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
           </div>
         )}
         <button
-          onClick={onNewAsset}
+          onClick={handleNewTaxatie}
           className="flex-1 bg-ntab-accent hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-          Nieuwe Taxatie
+          {saved ? 'Nieuwe Taxatie' : 'Opslaan & Nieuwe Taxatie'}
         </button>
       </div>
     </div>

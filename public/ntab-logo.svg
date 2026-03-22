@@ -1,15 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
-  <!-- Background shield shape -->
-  <rect x="2" y="2" width="56" height="56" rx="8" fill="#003366"/>
-  <rect x="2" y="2" width="56" height="56" rx="8" stroke="#0066CC" stroke-width="1.5"/>
-  <!-- NTAB letters -->
-  <text x="30" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="white" letter-spacing="1.5">NTAB</text>
-  <!-- Accent line -->
-  <rect x="12" y="33" width="36" height="2" rx="1" fill="#FF6600"/>
-  <!-- Subtext -->
-  <text x="30" y="46" text-anchor="middle" font-family="Arial, sans-serif" font-size="5.5" fill="#99BBDD" letter-spacing="0.5">SINDS 1904</text>
-  <!-- Full name -->
-  <text x="70" y="24" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#003366">TaxaTool</text>
-  <text x="70" y="40" font-family="Arial, sans-serif" font-size="9" fill="#666666">Nederlands Taxatie &amp; Adviesbureau</text>
-  <text x="70" y="52" font-family="Arial, sans-serif" font-size="7" fill="#999999">Taxateur Field Assistant</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="none">
+  <!-- Shield/badge -->
+  <rect x="1" y="1" width="58" height="58" rx="10" fill="#003399"/>
+  <rect x="1" y="1" width="58" height="58" rx="10" stroke="#0055BB" stroke-width="1"/>
+  <!-- Inner glow -->
+  <rect x="6" y="6" width="48" height="48" rx="6" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+  <!-- NTAB monogram -->
+  <text x="30" y="30" text-anchor="middle" dominant-baseline="central" font-family="'Segoe UI','Arial',sans-serif" font-size="16" font-weight="800" fill="white" letter-spacing="2">NTAB</text>
+  <!-- Orange accent bar -->
+  <rect x="10" y="39" width="40" height="2.5" rx="1.25" fill="#E05500"/>
+  <!-- Est. year -->
+  <text x="30" y="51" text-anchor="middle" font-family="'Segoe UI','Arial',sans-serif" font-size="5.5" fill="rgba(255,255,255,0.6)" letter-spacing="1.5">SINDS 1904</text>
+  <!-- Company name -->
+  <text x="72" y="22" font-family="'Segoe UI','Arial',sans-serif" font-size="20" font-weight="700" fill="#003399" letter-spacing="-0.3">TaxaTool</text>
+  <text x="72" y="38" font-family="'Segoe UI','Arial',sans-serif" font-size="9.5" fill="#555555" letter-spacing="0.2">Nederlands Taxatie &amp; Adviesbureau</text>
+  <text x="72" y="52" font-family="'Segoe UI','Arial',sans-serif" font-size="7.5" fill="#999999" letter-spacing="0.3">Taxateur Field Assistant · ISO 27001</text>
 </svg>
