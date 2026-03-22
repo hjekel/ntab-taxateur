@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { jsPDF } from 'jspdf'
 import { formatCurrency } from '../utils/priceCalculator'
 import { categories, conditionLabels } from '../data/categories'
 
@@ -28,8 +29,6 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
   async function handleExport() {
     setExporting(true)
     try {
-      const { jsPDF } = await import('jspdf')
-
       const pdf = new jsPDF('p', 'mm', 'a4')
       const W = pdf.internal.pageSize.getWidth()    // 210
       const H = pdf.internal.pageSize.getHeight()    // 297
@@ -258,7 +257,7 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
       pdf.save(`NTAB_Taxatierapport_${asset.brand}_${asset.model}_${reportNr.current}.pdf`)
     } catch (err) {
       console.error('PDF export error:', err)
-      alert('PDF export mislukt. Probeer Ctrl+P (Print) als alternatief.')
+      alert(`PDF export mislukt: ${err.message}\n\nProbeer Ctrl+P (Print) als alternatief.`)
     } finally {
       setExporting(false)
     }
