@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <!-- Background shield shape -->
+  <rect x="2" y="2" width="56" height="56" rx="8" fill="#003366"/>
+  <rect x="2" y="2" width="56" height="56" rx="8" stroke="#0066CC" stroke-width="1.5"/>
+  <!-- NTAB letters -->
+  <text x="30" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="white" letter-spacing="1.5">NTAB</text>
+  <!-- Accent line -->
+  <rect x="12" y="33" width="36" height="2" rx="1" fill="#FF6600"/>
+  <!-- Subtext -->
+  <text x="30" y="46" text-anchor="middle" font-family="Arial, sans-serif" font-size="5.5" fill="#99BBDD" letter-spacing="0.5">SINDS 1904</text>
+  <!-- Full name -->
+  <text x="70" y="24" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#003366">TaxaTool</text>
+  <text x="70" y="40" font-family="Arial, sans-serif" font-size="9" fill="#666666">Nederlands Taxatie &amp; Adviesbureau</text>
+  <text x="70" y="52" font-family="Arial, sans-serif" font-size="7" fill="#999999">Taxateur Field Assistant</text>
+</svg>

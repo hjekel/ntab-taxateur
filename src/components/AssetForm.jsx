@@ -64,8 +64,8 @@ export default function AssetForm({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-6">
-        <h2 className="text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
+        <h2 className="text-base sm:text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
           Asset Identificatie
         </h2>
@@ -168,8 +168,8 @@ export default function AssetForm({ onSubmit }) {
       </div>
 
       {/* Conditie */}
-      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-6">
-        <h2 className="text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
+        <h2 className="text-base sm:text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           Conditiebeoordeling
         </h2>
@@ -199,8 +199,8 @@ export default function AssetForm({ onSubmit }) {
       </div>
 
       {/* Foto upload simulatie */}
-      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-6">
-        <h2 className="text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
+        <h2 className="text-base sm:text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           Foto&apos;s
         </h2>
@@ -212,7 +212,7 @@ export default function AssetForm({ onSubmit }) {
       </div>
 
       {/* Notities */}
-      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
         <label className="block text-sm font-medium text-ntab-text mb-1">Aanvullende opmerkingen</label>
         <textarea
           value={form.notes}
@@ -226,7 +226,7 @@ export default function AssetForm({ onSubmit }) {
       {/* Submit */}
       <button
         type="submit"
-        className="w-full bg-ntab-accent hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg flex items-center justify-center gap-2"
+        className="w-full bg-ntab-accent hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
         Start Marktanalyse

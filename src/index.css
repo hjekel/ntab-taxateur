@@ -20,3 +20,31 @@
     margin: 0;
   }
 }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-fade-in { animation: fadeIn 0.4s ease-out; }
+.animate-slide-in { animation: slideIn 0.3s ease-out; }
+.animate-pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+
+/* Print styles */
+@media print {
+  body { background: white !important; }
+  header, footer, .no-print, button { display: none !important; }
+  .print-only { display: block !important; }
+  main { padding: 0 !important; }
+  .shadow-sm, .shadow-md, .shadow-lg { box-shadow: none !important; }
+  .border { border-color: #ccc !important; }
+}
