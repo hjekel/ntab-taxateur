@@ -80,6 +80,25 @@ export default function MarketSearch({ results, historical }) {
           </div>
         </div>
       )}
+      {/* Ecosystem integration hints */}
+      <div className="space-y-2">
+        <div className="opacity-40 border-2 border-dashed border-gray-300 p-4 rounded-xl flex items-center gap-3 cursor-not-allowed">
+          <span className="text-2xl">📦</span>
+          <div>
+            <p className="text-sm font-medium text-gray-500">Voorraaddata beschikbaar via Smart Stock koppeling</p>
+            <p className="text-xs text-gray-400">Marge-analyse, omlooptijd, ouderdomsanalyse · smartstock.nl</p>
+          </div>
+          <span className="ml-auto text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full shrink-0">Fase 2</span>
+        </div>
+        <div className="opacity-40 border-2 border-dashed border-gray-300 p-4 rounded-xl flex items-center gap-3 cursor-not-allowed">
+          <span className="text-2xl">📄</span>
+          <div>
+            <p className="text-sm font-medium text-gray-500">Debiteureninformatie via NTAB Alcore</p>
+            <p className="text-xs text-gray-400">Incasso, waardering, credit management · ntabalcore.nl</p>
+          </div>
+          <span className="ml-auto text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full shrink-0">Fase 2</span>
+        </div>
+      </div>
     </div>
   )
 }

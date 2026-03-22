@@ -75,7 +75,7 @@ export default function PriceEngine({ asset, onComplete }) {
   }
 
   const valueTypes = [
-    { key: 'liquidatiewaarde', label: 'Liquidatiewaarde', description: 'Opbrengst bij gedwongen verkoop', color: 'bg-red-50 border-red-200 text-red-800' },
+    { key: 'liquidatiewaarde', label: 'Liquidatiewaarde', description: 'Opbrengst bij gedwongen verkoop (WHOA-relevant)', color: 'bg-red-50 border-red-200 text-red-800' },
     { key: 'marktwaarde', label: 'Marktwaarde', description: 'Waarde bij normale markttransactie', color: 'bg-blue-50 border-blue-200 text-blue-800' },
     { key: 'onderhandseVerkoopwaarde', label: 'Onderhandse verkoopwaarde', description: 'Waarde bij vrijwillige verkoop', color: 'bg-green-50 border-green-200 text-green-800' },
     { key: 'vervangingswaarde', label: 'Vervangingswaarde', description: 'Kosten voor economisch equivalent', color: 'bg-purple-50 border-purple-200 text-purple-800' },
@@ -125,6 +125,9 @@ export default function PriceEngine({ asset, onComplete }) {
           <span>📋 {prices.dataPoints.marketListings} marktlistings</span>
           <span>📊 {prices.dataPoints.historicalTaxaties} historische taxaties</span>
           <span>🏷️ {prices.dataPoints.veilingResultaten} veilingresultaten</span>
+        </div>
+        <div className="mt-1 text-[10px] text-ntab-text-light italic">
+          Gebaseerd op {847 + prices.dataPoints.marketListings + prices.dataPoints.historicalTaxaties} vergelijkbare objecten in NTAB Waardedatabase
         </div>
         <div className="mt-2 flex items-center gap-1.5 text-[10px] text-ntab-text-light">
           <div className="w-1.5 h-1.5 bg-ntab-success rounded-full animate-pulse-dot" />

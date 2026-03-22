@@ -221,8 +221,23 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
       pdf.setFont('helvetica', 'italic')
       pdf.setFontSize(7)
       pdf.setTextColor(...lightText)
-      pdf.text('Bronnen: Mascus.nl, Troostwijk Auctions, BVA Auctions, Machineseeker.nl, NTAB Waardedatabase', M + 2, y)
-      y += 8
+      const bronLines = pdf.splitTextToSize('Bronnen: Mascus.nl, Troostwijk Auctions, BVA Auctions, Machineseeker.nl, Ritchie Bros, TractorPool.nl, NTAB Waardedatabase', cw - 4)
+      pdf.text(bronLines, M + 2, y)
+      y += bronLines.length * 4 + 4
+
+      // ── ECOSYSTEEM ──
+      checkPage(16)
+      pdf.setFillColor(245, 247, 250)
+      pdf.roundedRect(M, y, cw, 12, 2, 2, 'F')
+      pdf.setFont('helvetica', 'bold')
+      pdf.setFontSize(7)
+      pdf.setTextColor(...blue)
+      pdf.text('Onderdeel van NTAB digitaal ecosysteem', M + 4, y + 5)
+      pdf.setFont('helvetica', 'normal')
+      pdf.setFontSize(6.5)
+      pdf.setTextColor(...lightText)
+      pdf.text('Complementair aan Smart Stock voorraadbeheer \u00b7 Integratie met NTAB Alcore debiteurenbeheer', M + 4, y + 10)
+      y += 16
 
       // ── DISCLAIMER ──
       checkPage(20)
@@ -386,7 +401,7 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
                 <span className="font-medium">{priceData.prices.dataPoints.veilingResultaten}</span>
               </div>
               <div className="mt-2 text-xs text-ntab-text-light">
-                Bronnen: Mascus.nl, Troostwijk Auctions, BVA Auctions, Machineseeker.nl, NTAB Waardedatabase
+                Bronnen: Mascus.nl, Troostwijk Auctions, BVA Auctions, Machineseeker.nl, Ritchie Bros, TractorPool.nl, NTAB Waardedatabase
               </div>
             </div>
           </section>
@@ -400,6 +415,12 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
               zijn gebaseerd. Dit is een demonstratieversie.
             </p>
           </section>
+        </div>
+
+        {/* Ecosystem footer */}
+        <div className="bg-ntab-light border-t border-ntab-border px-4 sm:px-6 py-3">
+          <div className="text-xs font-medium text-ntab-primary">Onderdeel van NTAB digitaal ecosysteem</div>
+          <div className="text-[10px] text-ntab-text-light mt-0.5">Complementair aan Smart Stock voorraadbeheer · Integratie met NTAB Alcore debiteurenbeheer</div>
         </div>
 
         {/* Footer */}
