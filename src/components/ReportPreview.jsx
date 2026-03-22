@@ -259,7 +259,7 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
         )}
         <button
           onClick={onNewAsset}
-          className="flex-1 bg-ntab-accent hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
+          className="flex-1 bg-ntab-accent hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
           Nieuwe Taxatie

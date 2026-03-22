@@ -162,7 +162,7 @@ export default function App() {
                       ? 'bg-ntab-accent text-white font-semibold shadow-md scale-105'
                       : i < currentStep
                         ? 'bg-ntab-light text-ntab-primary font-medium cursor-pointer hover:bg-gray-200 hover:scale-102'
-                        : 'text-gray-400 cursor-not-allowed'
+                        : 'text-ntab-text-light bg-gray-50 border border-gray-200 cursor-not-allowed'
                   }`}
                 >
                   <span>{step.icon}</span>

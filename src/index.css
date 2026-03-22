@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ntab-primary: #003366;
-  --color-ntab-secondary: #0066CC;
-  --color-ntab-accent: #FF6600;
+  --color-ntab-primary: #003399;
+  --color-ntab-secondary: #0055BB;
+  --color-ntab-accent: #E05500;
   --color-ntab-light: #F5F7FA;
   --color-ntab-text: #333333;
   --color-ntab-text-light: #666666;

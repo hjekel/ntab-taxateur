@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { categories, brands, conditionLabels } from '../data/categories'
+import { categories, brands, exampleModels, conditionLabels } from '../data/categories'
 
 const currentYear = new Date().getFullYear()
 const years = Array.from({ length: 30 }, (_, i) => currentYear - i)
@@ -27,12 +27,22 @@ export default function AssetForm({ onSubmit }) {
     [form.category]
   )
 
+  const availableModels = useMemo(() => {
+    if (!form.brand || !form.subcategory) return []
+    const key = `${form.brand}|${form.subcategory}`
+    return exampleModels[key] || []
+  }, [form.brand, form.subcategory])
+
   function update(field, value) {
     setForm(prev => {
       const next = { ...prev, [field]: value }
       if (field === 'category') {
         next.subcategory = ''
         next.brand = ''
+        next.model = ''
+      }
+      if (field === 'brand') {
+        next.model = ''
       }
       return next
     })
@@ -108,31 +118,43 @@ export default function AssetForm({ onSubmit }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-ntab-text mb-1">Merk *</label>
-            <input
-              type="text"
-              list="brand-list"
+            <select
               value={form.brand}
               onChange={e => update('brand', e.target.value)}
-              placeholder="bijv. DMG Mori"
-              className={`w-full rounded-lg border ${errors.brand ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary`}
-            />
-            <datalist id="brand-list">
+              disabled={!form.category}
+              className={`w-full rounded-lg border ${errors.brand ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary disabled:bg-gray-100 disabled:text-gray-400`}
+            >
+              <option value="">-- Selecteer merk --</option>
               {availableBrands.map(b => (
-                <option key={b} value={b} />
+                <option key={b} value={b}>{b}</option>
               ))}
-            </datalist>
+            </select>
             {errors.brand && <p className="text-red-500 text-xs mt-1">{errors.brand}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-ntab-text mb-1">Model *</label>
-            <input
-              type="text"
-              value={form.model}
-              onChange={e => update('model', e.target.value)}
-              placeholder="bijv. CLX 350"
-              className={`w-full rounded-lg border ${errors.model ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary`}
-            />
+            {availableModels.length > 0 ? (
+              <select
+                value={form.model}
+                onChange={e => update('model', e.target.value)}
+                className={`w-full rounded-lg border ${errors.model ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary`}
+              >
+                <option value="">-- Selecteer model --</option>
+                {availableModels.map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={form.model}
+                onChange={e => update('model', e.target.value)}
+                placeholder={form.brand ? 'Voer model in' : 'Selecteer eerst een merk'}
+                disabled={!form.brand}
+                className={`w-full rounded-lg border ${errors.model ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary disabled:bg-gray-100 disabled:text-gray-400`}
+              />
+            )}
             {errors.model && <p className="text-red-500 text-xs mt-1">{errors.model}</p>}
           </div>
         </div>
@@ -226,7 +248,7 @@ export default function AssetForm({ onSubmit }) {
       {/* Submit */}
       <button
         type="submit"
-        className="w-full bg-ntab-accent hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+        className="w-full bg-ntab-accent hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
         Start Marktanalyse
