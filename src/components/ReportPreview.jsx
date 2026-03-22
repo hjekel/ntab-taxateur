@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { jsPDF } from 'jspdf'
+import NtabLogo from './NtabLogo'
 import { formatCurrency } from '../utils/priceCalculator'
 import { categories, conditionLabels } from '../data/categories'
 
@@ -46,20 +47,30 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
       pdf.setFillColor(...blue)
       pdf.rect(0, 0, W, 40, 'F')
 
-      // NTAB logo block (white rounded rect)
+      // NTAB logo block — 2x2 grid: NT blue, A red, B blue
+      const logoX = M
+      const logoY = 8
+      const cellW = 11
+      const cellH = 11
+      const ntabBlue = [26, 43, 94]   // #1a2b5e
+      const ntabRed = [196, 30, 58]    // #c41e3a
+      // White background
       pdf.setFillColor(255, 255, 255)
-      pdf.roundedRect(M, 8, 24, 24, 3, 3, 'F')
+      pdf.roundedRect(logoX, logoY, cellW * 2 + 2, cellH * 2 + 2, 2, 2, 'F')
+      // Letters
       pdf.setFont('helvetica', 'bold')
-      pdf.setFontSize(10)
-      pdf.setTextColor(...blue)
-      pdf.text('NTAB', M + 12, 19, { align: 'center' })
-      // Orange accent line in logo
-      pdf.setFillColor(...orange)
-      pdf.rect(M + 4, 22, 16, 1.5, 'F')
-      // "Sinds 1904" in logo
-      pdf.setFontSize(4.5)
-      pdf.setTextColor(150, 150, 150)
-      pdf.text('SINDS 1904', M + 12, 28, { align: 'center' })
+      pdf.setFontSize(12)
+      // N (blue)
+      pdf.setTextColor(...ntabBlue)
+      pdf.text('N', logoX + 1 + cellW / 2, logoY + 1 + cellH / 2 + 2, { align: 'center' })
+      // T (blue)
+      pdf.text('T', logoX + 1 + cellW + cellW / 2, logoY + 1 + cellH / 2 + 2, { align: 'center' })
+      // A (red)
+      pdf.setTextColor(...ntabRed)
+      pdf.text('A', logoX + 1 + cellW / 2, logoY + 1 + cellH + cellH / 2 + 2, { align: 'center' })
+      // B (blue)
+      pdf.setTextColor(...ntabBlue)
+      pdf.text('B', logoX + 1 + cellW + cellW / 2, logoY + 1 + cellH + cellH / 2 + 2, { align: 'center' })
 
       // Title text
       pdf.setTextColor(255, 255, 255)
@@ -288,9 +299,8 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
         <div className="bg-ntab-primary text-white p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-white rounded-lg p-1.5 shrink-0 hidden sm:block">
-                <div className="text-ntab-primary font-black text-sm leading-none tracking-tight">NTAB</div>
-                <div className="w-10 h-0.5 bg-ntab-accent rounded mt-0.5 mx-auto" />
+              <div className="hidden sm:block">
+                <NtabLogo size="md" variant="light" />
               </div>
               <div>
                 <div className="text-xs sm:text-sm opacity-75 mb-1">NTAB - Nederlands Taxatie &amp; Adviesbureau</div>

@@ -3,6 +3,8 @@ import AssetForm from './components/AssetForm'
 import PriceEngine from './components/PriceEngine'
 import TaxateurAdjust from './components/TaxateurAdjust'
 import ReportPreview from './components/ReportPreview'
+import NtabLogo from './components/NtabLogo'
+import HelpModal from './components/HelpModal'
 import { formatCurrency } from './utils/priceCalculator'
 import { categories, conditionLabels } from './data/categories'
 
@@ -33,6 +35,7 @@ export default function App() {
   const [adjustment, setAdjustment] = useState(null)
   const [completedAssets, setCompletedAssets] = useState([])
   const [showAssetList, setShowAssetList] = useState(false)
+  const [showHelp, setShowHelp] = useState(false)
   const [sessionRestored, setSessionRestored] = useState(false)
 
   // Restore session from localStorage
@@ -110,15 +113,21 @@ export default function App() {
       <header className="bg-ntab-primary shadow-lg no-print">
         <div className="max-w-5xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="bg-white rounded-lg p-1 sm:p-1.5 shrink-0">
-              <div className="text-ntab-primary font-black text-sm sm:text-lg leading-none tracking-tight">NTAB</div>
-            </div>
+            <NtabLogo size="md" variant="light" />
             <div className="min-w-0">
               <h1 className="text-white font-bold text-base sm:text-lg">TaxaTool</h1>
               <p className="text-blue-200 text-[10px] sm:text-xs hidden sm:block">Taxateur Field Assistant</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Help button */}
+            <button
+              onClick={() => setShowHelp(true)}
+              className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white rounded-full px-2.5 sm:px-3 py-1 text-xs transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span className="hidden sm:inline">Uitleg</span>
+            </button>
             {/* Live data indicator */}
             <div className="hidden sm:flex items-center gap-1.5 bg-blue-900/50 rounded-full px-3 py-1">
               <div className="w-2 h-2 bg-ntab-success rounded-full animate-pulse-dot" />
@@ -231,6 +240,9 @@ export default function App() {
           <span>TaxaTool v0.2 Demo · Marktdata van {new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
         </div>
       </footer>
+
+      {/* Help modal */}
+      {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
     </div>
   )
 }
