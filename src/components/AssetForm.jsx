@@ -14,6 +14,7 @@ export default function AssetForm({ onSubmit }) {
     hours: '',
     condition: 3,
     notes: '',
+    photos: [],
   })
   const [errors, setErrors] = useState({})
 
@@ -196,28 +197,60 @@ export default function AssetForm({ onSubmit }) {
           Conditiebeoordeling
         </h2>
 
-        <div className="flex gap-2 mb-3">
-          {conditionLabels.map(c => (
-            <button
-              key={c.value}
-              type="button"
-              onClick={() => update('condition', c.value)}
-              className={`flex-1 py-3 px-2 rounded-lg text-sm font-medium transition-all ${
-                form.condition === c.value
-                  ? 'bg-ntab-primary text-white shadow-md scale-105'
-                  : 'bg-ntab-light text-ntab-text hover:bg-gray-200'
-              }`}
-            >
-              <div className="text-lg mb-1">
-                {c.value === 1 ? '😟' : c.value === 2 ? '😐' : c.value === 3 ? '🙂' : c.value === 4 ? '😊' : '🤩'}
-              </div>
-              {c.label}
-            </button>
-          ))}
+        {/* Professional condition scale bar */}
+        <div className="mb-4">
+          <div className="flex items-stretch border border-ntab-border rounded-lg overflow-hidden">
+            {conditionLabels.map((c, i) => {
+              const isSelected = form.condition === c.value
+              const barColors = [
+                'bg-red-700', 'bg-amber-600', 'bg-yellow-500', 'bg-emerald-600', 'bg-ntab-primary'
+              ]
+              return (
+                <button
+                  key={c.value}
+                  type="button"
+                  onClick={() => update('condition', c.value)}
+                  className={`flex-1 py-3 px-1 text-center transition-all relative ${
+                    i < conditionLabels.length - 1 ? 'border-r border-ntab-border' : ''
+                  } ${isSelected
+                    ? `${barColors[i]} text-white font-semibold`
+                    : 'bg-white text-ntab-text hover:bg-ntab-light'
+                  }`}
+                >
+                  <div className={`text-xs font-bold mb-0.5 ${isSelected ? 'text-white/80' : 'text-ntab-text-light'}`}>
+                    {c.value}
+                  </div>
+                  <div className="text-[11px] sm:text-xs leading-tight">{c.label}</div>
+                </button>
+              )
+            })}
+          </div>
+          {/* Scale gradient indicator */}
+          <div className="flex mt-1.5">
+            <div className="h-1 flex-1 rounded-l-full bg-red-700" />
+            <div className="h-1 flex-1 bg-amber-600" />
+            <div className="h-1 flex-1 bg-yellow-500" />
+            <div className="h-1 flex-1 bg-emerald-600" />
+            <div className="h-1 flex-1 rounded-r-full bg-ntab-primary" />
+          </div>
         </div>
-        <p className="text-sm text-ntab-text-light italic">
-          {conditionLabels.find(c => c.value === form.condition)?.description}
-        </p>
+
+        {/* Selected condition detail */}
+        <div className="bg-ntab-light rounded-lg p-3 flex items-start gap-3">
+          <div className={`shrink-0 w-8 h-8 rounded flex items-center justify-center text-white font-bold text-sm ${
+            form.condition === 1 ? 'bg-red-700' : form.condition === 2 ? 'bg-amber-600' : form.condition === 3 ? 'bg-yellow-500' : form.condition === 4 ? 'bg-emerald-600' : 'bg-ntab-primary'
+          }`}>
+            {form.condition}
+          </div>
+          <div>
+            <div className="text-sm font-medium text-ntab-text">
+              {conditionLabels.find(c => c.value === form.condition)?.label}
+            </div>
+            <div className="text-xs text-ntab-text-light mt-0.5">
+              {conditionLabels.find(c => c.value === form.condition)?.description}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Foto upload simulatie */}
@@ -225,12 +258,45 @@ export default function AssetForm({ onSubmit }) {
         <h2 className="text-base sm:text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           Foto&apos;s
+          {form.photos?.length > 0 && <span className="text-xs font-normal text-ntab-text-light ml-1">({form.photos.length})</span>}
         </h2>
-        <div className="border-2 border-dashed border-ntab-border rounded-lg p-8 text-center hover:border-ntab-secondary transition-colors cursor-pointer">
-          <svg className="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-          <p className="text-sm text-ntab-text-light">Sleep foto&apos;s hierheen of <span className="text-ntab-secondary font-medium">klik om te uploaden</span></p>
-          <p className="text-xs text-gray-400 mt-1">PNG, JPG tot 10MB (demo modus)</p>
-        </div>
+
+        {/* Uploaded photos grid */}
+        {form.photos?.length > 0 && (
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
+            {form.photos.map((photo, i) => (
+              <div key={i} className="relative group aspect-square bg-ntab-light rounded-lg border border-ntab-border overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-ntab-text-light/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 truncate">
+                  {photo}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setForm(prev => ({ ...prev, photos: prev.photos.filter((_, j) => j !== i) }))}
+                  className="absolute top-1 right-1 w-5 h-5 bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => {
+            const demoNames = ['voorzijde.jpg', 'linkerzijde.jpg', 'rechterzijde.jpg', 'typeplaat.jpg', 'bedieningspaneel.jpg', 'detail_slijtage.jpg']
+            const nextName = demoNames[(form.photos?.length || 0) % demoNames.length]
+            setForm(prev => ({ ...prev, photos: [...(prev.photos || []), nextName] }))
+          }}
+          className="w-full border-2 border-dashed border-ntab-border rounded-lg p-6 text-center hover:border-ntab-secondary hover:bg-ntab-light/50 transition-colors cursor-pointer"
+        >
+          <svg className="w-8 h-8 mx-auto text-gray-400 mb-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" /></svg>
+          <p className="text-sm text-ntab-text-light">Foto toevoegen <span className="text-ntab-secondary font-medium">(demo)</span></p>
+          <p className="text-xs text-gray-400 mt-0.5">Klik om een gesimuleerde foto toe te voegen</p>
+        </button>
       </div>
 
       {/* Notities */}
