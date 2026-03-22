@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ntab-primary: #003366;
+  --color-ntab-secondary: #0066CC;
+  --color-ntab-accent: #FF6600;
+  --color-ntab-light: #F5F7FA;
+  --color-ntab-text: #333333;
+  --color-ntab-text-light: #666666;
+  --color-ntab-border: #E2E8F0;
+  --color-ntab-success: #10B981;
+  --color-ntab-warning: #F59E0B;
+}
+
+@layer base {
+  body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    background-color: #F5F7FA;
+    color: #333333;
+    margin: 0;
+  }
+}
