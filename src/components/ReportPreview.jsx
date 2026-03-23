@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import { jsPDF } from 'jspdf'
 import NtabLogo from './NtabLogo'
+import ExportMenu from './ExportMenu'
+import { useI18n } from '../i18n'
 import { formatCurrency } from '../utils/priceCalculator'
 import { categories, conditionLabels } from '../data/categories'
 
@@ -12,6 +14,7 @@ const valueTypeLabels = {
 }
 
 export default function ReportPreview({ asset, priceData, adjustment, onSaveAsset, onNewAsset }) {
+  const { t } = useI18n()
   const [exporting, setExporting] = useState(false)
   const [saved, setSaved] = useState(false)
   const reportRef = useRef(null)
@@ -449,43 +452,46 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
           {exporting ? (
             <>
               <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-              Exporteren...
+              {t('exporting')}
             </>
           ) : (
             <>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-              Exporteer als PDF
+              {t('exportPdf')}
             </>
           )}
         </button>
+        <ExportMenu asset={asset} priceData={priceData} adjustment={adjustment} reportNr={reportNr.current} />
+      </div>
+      <div className="flex flex-col sm:flex-row gap-3 no-print">
         <button
           onClick={handlePrint}
           className="flex-1 bg-white hover:bg-gray-50 text-ntab-primary font-semibold py-3 px-6 rounded-xl border-2 border-ntab-primary transition-all hover:shadow-md hover:scale-[1.02] flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-          Print
+          {t('print')}
         </button>
-      </div>
-      <div className="flex flex-col sm:flex-row gap-3 no-print">
         {!saved ? (
           <button
             onClick={handleSave}
             className="flex-1 bg-ntab-success hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-            Opslaan in sessie
+            {t('saveSession')}
           </button>
         ) : (
           <div className="flex-1 bg-ntab-success/10 text-ntab-success font-semibold py-3 px-6 rounded-xl border border-ntab-success/30 flex items-center justify-center gap-2">
-            ✅ Opgeslagen
+            ✅ {t('saved')}
           </div>
         )}
+      </div>
+      <div className="flex flex-col sm:flex-row gap-3 no-print">
         <button
           onClick={handleNewTaxatie}
           className="flex-1 bg-ntab-accent hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-          {saved ? 'Nieuwe Taxatie' : 'Opslaan & Nieuwe Taxatie'}
+          {saved ? t('newTaxation') : t('saveAndNew')}
         </button>
       </div>
     </div>

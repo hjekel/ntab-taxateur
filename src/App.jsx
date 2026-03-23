@@ -5,14 +5,16 @@ import TaxateurAdjust from './components/TaxateurAdjust'
 import ReportPreview from './components/ReportPreview'
 import NtabLogo from './components/NtabLogo'
 import HelpModal from './components/HelpModal'
+import LanguageToggle from './components/LanguageToggle'
+import { useI18n } from './i18n'
 import { formatCurrency } from './utils/priceCalculator'
 import { categories, conditionLabels } from './data/categories'
 
-const steps = [
-  { id: 'input', label: 'Asset Invoer', icon: '📋' },
-  { id: 'analysis', label: 'Marktanalyse', icon: '🔍' },
-  { id: 'adjust', label: 'Aanpassing', icon: '✏️' },
-  { id: 'report', label: 'Rapport', icon: '📄' },
+const stepKeys = [
+  { id: 'input', labelKey: 'step1', icon: '📋' },
+  { id: 'analysis', labelKey: 'step2', icon: '🔍' },
+  { id: 'adjust', labelKey: 'step3', icon: '✏️' },
+  { id: 'report', labelKey: 'step4', icon: '📄' },
 ]
 
 const STORAGE_KEY = 'ntab-taxatool-session'
@@ -29,6 +31,7 @@ function saveSession(session) {
 }
 
 export default function App() {
+  const { t } = useI18n()
   const [currentStep, setCurrentStep] = useState(0)
   const [asset, setAsset] = useState(null)
   const [priceData, setPriceData] = useState(null)
@@ -126,13 +129,15 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Language toggle */}
+            <LanguageToggle />
             {/* Help button */}
             <button
               onClick={() => setShowHelp(true)}
               className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white rounded-full px-2.5 sm:px-3 py-1 text-xs transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              <span className="hidden sm:inline">Uitleg</span>
+              <span className="hidden sm:inline">{t('help')}</span>
             </button>
             {/* Live data indicator */}
             <div className="hidden sm:flex items-center gap-1.5 bg-blue-900/50 rounded-full px-3 py-1">
@@ -167,7 +172,7 @@ export default function App() {
       <div className="bg-white border-b border-ntab-border shadow-sm no-print">
         <div className="max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-3">
           <div className="flex items-center justify-between">
-            {steps.map((step, i) => (
+            {stepKeys.map((step, i) => (
               <div key={step.id} className="flex items-center flex-1">
                 <button
                   onClick={() => goToStep(i)}
@@ -183,9 +188,9 @@ export default function App() {
                   <span className={`inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-bold shrink-0 ${
                     i === currentStep ? 'bg-white/25 text-white' : i < currentStep ? 'bg-ntab-primary text-white' : 'bg-gray-200 text-gray-500'
                   }`}>{i + 1}</span>
-                  <span className="hidden sm:inline">{step.label}</span>
+                  <span className="hidden sm:inline">{t(step.labelKey)}</span>
                 </button>
-                {i < steps.length - 1 && (
+                {i < stepKeys.length - 1 && (
                   <div className={`flex-1 h-0.5 mx-1 sm:mx-2 transition-colors duration-500 ${i < currentStep ? 'bg-ntab-accent' : 'bg-gray-200'}`} />
                 )}
               </div>
