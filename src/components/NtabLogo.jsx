@@ -1,5 +1,5 @@
 // NTAB logo matching official branding:
-// Dark border frame, N T on top row (dark navy), A (red) B (dark navy) on bottom
+// Dark border frame, N T on top row (dark navy), A (dark navy) B (RED) on bottom
 // Bold condensed block letters, tight grid, no rounded corners
 export default function NtabLogo({ size = 'md', variant = 'light' }) {
   const sizes = {
@@ -29,9 +29,9 @@ export default function NtabLogo({ size = 'md', variant = 'light' }) {
       <div className={`flex items-center justify-center ${s.letter} leading-none`}
         style={{ ...blueStyle, fontFamily: "'Arial Black','Arial',sans-serif", fontWeight: 900 }}>T</div>
       <div className={`flex items-center justify-center ${s.letter} leading-none`}
-        style={{ ...redStyle, fontFamily: "'Arial Black','Arial',sans-serif", fontWeight: 900 }}>A</div>
+        style={{ ...blueStyle, fontFamily: "'Arial Black','Arial',sans-serif", fontWeight: 900 }}>A</div>
       <div className={`flex items-center justify-center ${s.letter} leading-none`}
-        style={{ ...blueStyle, fontFamily: "'Arial Black','Arial',sans-serif", fontWeight: 900 }}>B</div>
+        style={{ ...redStyle, fontFamily: "'Arial Black','Arial',sans-serif", fontWeight: 900 }}>B</div>
     </div>
   )
 }

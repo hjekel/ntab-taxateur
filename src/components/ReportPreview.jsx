@@ -65,11 +65,11 @@ export default function ReportPreview({ asset, priceData, adjustment, onSaveAsse
       pdf.text('N', logoX + 1 + cellW / 2, logoY + 1 + cellH / 2 + 2, { align: 'center' })
       // T (blue)
       pdf.text('T', logoX + 1 + cellW + cellW / 2, logoY + 1 + cellH / 2 + 2, { align: 'center' })
-      // A (red)
-      pdf.setTextColor(...ntabRed)
-      pdf.text('A', logoX + 1 + cellW / 2, logoY + 1 + cellH + cellH / 2 + 2, { align: 'center' })
-      // B (blue)
+      // A (blue)
       pdf.setTextColor(...ntabBlue)
+      pdf.text('A', logoX + 1 + cellW / 2, logoY + 1 + cellH + cellH / 2 + 2, { align: 'center' })
+      // B (red)
+      pdf.setTextColor(...ntabRed)
       pdf.text('B', logoX + 1 + cellW + cellW / 2, logoY + 1 + cellH + cellH / 2 + 2, { align: 'center' })
 
       // Title text

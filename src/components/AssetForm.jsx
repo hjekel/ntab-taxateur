@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { categories, brands, exampleModels, conditionLabels } from '../data/categories'
+import PhotoUpload from './PhotoUpload'
 
 const currentYear = new Date().getFullYear()
 const years = Array.from({ length: 30 }, (_, i) => currentYear - i)
@@ -253,51 +254,11 @@ export default function AssetForm({ onSubmit }) {
         </div>
       </div>
 
-      {/* Foto upload simulatie */}
-      <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
-        <h2 className="text-base sm:text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-          Foto&apos;s
-          {form.photos?.length > 0 && <span className="text-xs font-normal text-ntab-text-light ml-1">({form.photos.length})</span>}
-        </h2>
-
-        {/* Uploaded photos grid */}
-        {form.photos?.length > 0 && (
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
-            {form.photos.map((photo, i) => (
-              <div key={i} className="relative group aspect-square bg-ntab-light rounded-lg border border-ntab-border overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-ntab-text-light/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 truncate">
-                  {photo}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setForm(prev => ({ ...prev, photos: prev.photos.filter((_, j) => j !== i) }))}
-                  className="absolute top-1 right-1 w-5 h-5 bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <button
-          type="button"
-          onClick={() => {
-            const demoNames = ['voorzijde.jpg', 'linkerzijde.jpg', 'rechterzijde.jpg', 'typeplaat.jpg', 'bedieningspaneel.jpg', 'detail_slijtage.jpg']
-            const nextName = demoNames[(form.photos?.length || 0) % demoNames.length]
-            setForm(prev => ({ ...prev, photos: [...(prev.photos || []), nextName] }))
-          }}
-          className="w-full border-2 border-dashed border-ntab-border rounded-lg p-6 text-center hover:border-ntab-secondary hover:bg-ntab-light/50 transition-colors cursor-pointer"
-        >
-          <svg className="w-8 h-8 mx-auto text-gray-400 mb-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" /></svg>
-          <p className="text-sm text-ntab-text-light">Foto toevoegen <span className="text-ntab-secondary font-medium">(demo)</span></p>
-          <p className="text-xs text-gray-400 mt-0.5">Klik om een gesimuleerde foto toe te voegen</p>
-        </button>
-      </div>
+      {/* Foto upload */}
+      <PhotoUpload
+        photos={form.photos || []}
+        onChange={photos => setForm(prev => ({ ...prev, photos }))}
+      />
 
       {/* Notities */}
       <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
