@@ -1,4 +1,5 @@
 import { formatCurrency } from '../utils/priceCalculator'
+import { useI18n } from '../i18n.jsx'
 
 const sourceColors = {
   'Mascus': 'bg-blue-600',
@@ -8,17 +9,18 @@ const sourceColors = {
 }
 
 export default function MarketSearch({ results, historical }) {
+  const { t } = useI18n()
   return (
     <div className="space-y-4">
       {/* Market Listings */}
       <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-6">
         <h3 className="text-md font-semibold text-ntab-primary mb-3 flex items-center gap-2">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-          Marktresultaten ({results.length})
+          {t('marketResults')} ({results.length})
         </h3>
 
         {results.length === 0 ? (
-          <p className="text-sm text-ntab-text-light italic">Geen resultaten gevonden voor deze zoekcriteria.</p>
+          <p className="text-sm text-ntab-text-light italic">{t('noResults')}</p>
         ) : (
           <div className="space-y-2">
             {results.map(r => (
@@ -36,7 +38,7 @@ export default function MarketSearch({ results, historical }) {
                 </div>
                 <div className="text-right shrink-0">
                   <div className="font-bold text-ntab-primary">{formatCurrency(r.price)}</div>
-                  {r.isAuction && <span className="text-[10px] bg-ntab-accent text-white px-1.5 py-0.5 rounded">Veiling</span>}
+                  {r.isAuction && <span className="text-[10px] bg-ntab-accent text-white px-1.5 py-0.5 rounded">{t('auction')}</span>}
                 </div>
               </div>
             ))}
@@ -49,7 +51,7 @@ export default function MarketSearch({ results, historical }) {
         <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-6">
           <h3 className="text-md font-semibold text-ntab-primary mb-3 flex items-center gap-2">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            NTAB Waardedatabase ({historical.length} referenties)
+            {t('ntabDatabase')} ({historical.length} {t('references')})
           </h3>
 
           <div className="overflow-x-auto">
@@ -85,18 +87,18 @@ export default function MarketSearch({ results, historical }) {
         <div className="opacity-40 border-2 border-dashed border-gray-300 p-4 rounded-xl flex items-center gap-3 cursor-not-allowed">
           <span className="text-2xl">📦</span>
           <div>
-            <p className="text-sm font-medium text-gray-500">Voorraaddata beschikbaar via Smart Stock koppeling</p>
-            <p className="text-xs text-gray-400">Marge-analyse, omlooptijd, ouderdomsanalyse · smartstock.nl</p>
+            <p className="text-sm font-medium text-gray-500">{t('stockDataAvailable')}</p>
+            <p className="text-xs text-gray-400">{t('stockDataDesc')} · smartstock.nl</p>
           </div>
-          <span className="ml-auto text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full shrink-0">Fase 2</span>
+          <span className="ml-auto text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full shrink-0">{t('phase2')}</span>
         </div>
         <div className="opacity-40 border-2 border-dashed border-gray-300 p-4 rounded-xl flex items-center gap-3 cursor-not-allowed">
           <span className="text-2xl">📄</span>
           <div>
-            <p className="text-sm font-medium text-gray-500">Debiteureninformatie via NTAB Alcore</p>
-            <p className="text-xs text-gray-400">Incasso, waardering, credit management · ntabalcore.nl</p>
+            <p className="text-sm font-medium text-gray-500">{t('debtorInfo')}</p>
+            <p className="text-xs text-gray-400">{t('debtorDesc')} · ntabalcore.nl</p>
           </div>
-          <span className="ml-auto text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full shrink-0">Fase 2</span>
+          <span className="ml-auto text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full shrink-0">{t('phase2')}</span>
         </div>
       </div>
     </div>

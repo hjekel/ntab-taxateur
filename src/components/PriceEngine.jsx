@@ -3,16 +3,18 @@ import { getMarketResults } from '../data/mockMarketResults'
 import { getHistoricalData } from '../data/mockHistorical'
 import { calculatePrices, formatCurrency } from '../utils/priceCalculator'
 import MarketSearch from './MarketSearch'
+import { useI18n } from '../i18n.jsx'
 
 const searchSteps = [
-  { label: 'Zoeken op Mascus.nl...', icon: '🔍', duration: 800 },
-  { label: 'Zoeken op Troostwijk Auctions...', icon: '🏷️', duration: 700 },
-  { label: 'Zoeken op BVA Auctions...', icon: '📦', duration: 600 },
-  { label: 'Raadplegen historische database...', icon: '📊', duration: 900 },
-  { label: 'Analyseren en berekenen...', icon: '🧮', duration: 500 },
+  { labelKey: 'searchingMascus', icon: '🔍', duration: 800 },
+  { labelKey: 'searchingTroostwijk', icon: '🏷️', duration: 700 },
+  { labelKey: 'searchingBVA', icon: '📦', duration: 600 },
+  { labelKey: 'searchingDatabase', icon: '📊', duration: 900 },
+  { labelKey: 'calculating', icon: '🧮', duration: 500 },
 ]
 
 export default function PriceEngine({ asset, onComplete }) {
+  const { t } = useI18n()
   const [searchStep, setSearchStep] = useState(0)
   const [isSearching, setIsSearching] = useState(true)
   const [marketResults, setMarketResults] = useState([])
@@ -47,8 +49,8 @@ export default function PriceEngine({ asset, onComplete }) {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-ntab-light rounded-full mb-4">
             <span className="text-3xl animate-bounce">{searchSteps[searchStep].icon}</span>
           </div>
-          <h2 className="text-lg font-semibold text-ntab-primary mb-2">Marktanalyse</h2>
-          <p className="text-ntab-text mb-6">{searchSteps[searchStep].label}</p>
+          <h2 className="text-lg font-semibold text-ntab-primary mb-2">{t('marketAnalysis')}</h2>
+          <p className="text-ntab-text mb-6">{t(searchSteps[searchStep].labelKey)}</p>
 
           {/* Progress bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
@@ -75,10 +77,10 @@ export default function PriceEngine({ asset, onComplete }) {
   }
 
   const valueTypes = [
-    { key: 'liquidatiewaarde', label: 'Liquidatiewaarde', description: 'Opbrengst bij gedwongen verkoop (WHOA-relevant)', color: 'bg-red-50 border-red-200 text-red-800' },
-    { key: 'marktwaarde', label: 'Marktwaarde', description: 'Waarde bij normale markttransactie', color: 'bg-blue-50 border-blue-200 text-blue-800' },
-    { key: 'onderhandseVerkoopwaarde', label: 'Onderhandse verkoopwaarde', description: 'Waarde bij vrijwillige verkoop', color: 'bg-green-50 border-green-200 text-green-800' },
-    { key: 'vervangingswaarde', label: 'Vervangingswaarde', description: 'Kosten voor economisch equivalent', color: 'bg-purple-50 border-purple-200 text-purple-800' },
+    { key: 'liquidatiewaarde', label: t('liquidationValue'), description: t('liquidationDesc'), color: 'bg-red-50 border-red-200 text-red-800' },
+    { key: 'marktwaarde', label: t('marketValue'), description: t('marketDesc'), color: 'bg-blue-50 border-blue-200 text-blue-800' },
+    { key: 'onderhandseVerkoopwaarde', label: t('privateValue'), description: t('privateDesc'), color: 'bg-green-50 border-green-200 text-green-800' },
+    { key: 'vervangingswaarde', label: t('replacementValue'), description: t('replacementDesc'), color: 'bg-purple-50 border-purple-200 text-purple-800' },
   ]
 
   return (
@@ -88,10 +90,10 @@ export default function PriceEngine({ asset, onComplete }) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-ntab-primary flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            Waardesuggestie
+            {t('valueSuggestion')}
           </h2>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-ntab-text-light">Betrouwbaarheid</span>
+            <span className="text-xs text-ntab-text-light">{t('reliability')}</span>
             <div className="flex items-center gap-1 bg-ntab-light rounded-full px-3 py-1">
               <div className="w-20 bg-gray-200 rounded-full h-2">
                 <div
@@ -112,7 +114,7 @@ export default function PriceEngine({ asset, onComplete }) {
                 <div className="text-xs font-medium opacity-75 mb-1">{vt.label}</div>
                 <div className="text-2xl font-bold">{formatCurrency(val.mid)}</div>
                 <div className="text-xs opacity-60 mt-1">
-                  Range: {formatCurrency(val.low)} – {formatCurrency(val.high)}
+                  {t('range')}: {formatCurrency(val.low)} – {formatCurrency(val.high)}
                 </div>
                 <div className="text-xs opacity-50 mt-0.5">{vt.description}</div>
               </div>
@@ -122,16 +124,16 @@ export default function PriceEngine({ asset, onComplete }) {
 
         {/* Data points info */}
         <div className="mt-4 flex flex-wrap gap-3 sm:gap-4 text-xs text-ntab-text-light">
-          <span>📋 {prices.dataPoints.marketListings} marktlistings</span>
-          <span>📊 {prices.dataPoints.historicalTaxaties} historische taxaties</span>
-          <span>🏷️ {prices.dataPoints.veilingResultaten} veilingresultaten</span>
+          <span>📋 {prices.dataPoints.marketListings} {t('marketListings')}</span>
+          <span>📊 {prices.dataPoints.historicalTaxaties} {t('historicalTaxations')}</span>
+          <span>🏷️ {prices.dataPoints.veilingResultaten} {t('auctionResults')}</span>
         </div>
         <div className="mt-1 text-[10px] text-ntab-text-light italic">
-          Gebaseerd op {847 + prices.dataPoints.marketListings + prices.dataPoints.historicalTaxaties} vergelijkbare objecten in NTAB Waardedatabase
+          {t('basedOn')} {847 + prices.dataPoints.marketListings + prices.dataPoints.historicalTaxaties} {t('comparableObjects')}
         </div>
         <div className="mt-2 flex items-center gap-1.5 text-[10px] text-ntab-text-light">
           <div className="w-1.5 h-1.5 bg-ntab-success rounded-full animate-pulse-dot" />
-          Marktdata van: {new Date().toLocaleString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+          {t('marketDataFrom')}: {new Date().toLocaleString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
 
@@ -144,7 +146,7 @@ export default function PriceEngine({ asset, onComplete }) {
         className="w-full bg-ntab-accent hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-        Ga naar Taxateur Aanpassing
+        {t('goToAdjustment')}
       </button>
     </div>
   )

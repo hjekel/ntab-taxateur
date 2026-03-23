@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
 import { categories, brands, exampleModels, conditionLabels } from '../data/categories'
 import PhotoUpload from './PhotoUpload'
+import { useI18n } from '../i18n.jsx'
 
 const currentYear = new Date().getFullYear()
 const years = Array.from({ length: 30 }, (_, i) => currentYear - i)
 
 export default function AssetForm({ onSubmit }) {
+  const { t } = useI18n()
   const [form, setForm] = useState({
     category: '',
     subcategory: '',
@@ -79,19 +81,19 @@ export default function AssetForm({ onSubmit }) {
       <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
         <h2 className="text-base sm:text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-          Asset Identificatie
+          {t('assetIdentification')}
         </h2>
 
         {/* Categorie */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-ntab-text mb-1">Categorie *</label>
+            <label className="block text-sm font-medium text-ntab-text mb-1">{t('category')} *</label>
             <select
               value={form.category}
               onChange={e => update('category', e.target.value)}
               className={`w-full rounded-lg border ${errors.category ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary`}
             >
-              <option value="">-- Selecteer categorie --</option>
+              <option value="">{t('selectCategory')}</option>
               {categories.map(c => (
                 <option key={c.id} value={c.id}>{c.label}</option>
               ))}
@@ -100,14 +102,14 @@ export default function AssetForm({ onSubmit }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ntab-text mb-1">Subcategorie *</label>
+            <label className="block text-sm font-medium text-ntab-text mb-1">{t('subcategory')} *</label>
             <select
               value={form.subcategory}
               onChange={e => update('subcategory', e.target.value)}
               disabled={!selectedCategory}
               className={`w-full rounded-lg border ${errors.subcategory ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary disabled:bg-gray-100 disabled:text-gray-400`}
             >
-              <option value="">-- Selecteer subcategorie --</option>
+              <option value="">{t('selectSubcategory')}</option>
               {selectedCategory?.subcategories.map(s => (
                 <option key={s.id} value={s.id}>{s.label}</option>
               ))}
@@ -119,14 +121,14 @@ export default function AssetForm({ onSubmit }) {
         {/* Merk & Model */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-ntab-text mb-1">Merk *</label>
+            <label className="block text-sm font-medium text-ntab-text mb-1">{t('brand')} *</label>
             <select
               value={form.brand}
               onChange={e => update('brand', e.target.value)}
               disabled={!form.category}
               className={`w-full rounded-lg border ${errors.brand ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary disabled:bg-gray-100 disabled:text-gray-400`}
             >
-              <option value="">-- Selecteer merk --</option>
+              <option value="">{t('selectBrand')}</option>
               {availableBrands.map(b => (
                 <option key={b} value={b}>{b}</option>
               ))}
@@ -135,14 +137,14 @@ export default function AssetForm({ onSubmit }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ntab-text mb-1">Model *</label>
+            <label className="block text-sm font-medium text-ntab-text mb-1">{t('model')} *</label>
             {availableModels.length > 0 ? (
               <select
                 value={form.model}
                 onChange={e => update('model', e.target.value)}
                 className={`w-full rounded-lg border ${errors.model ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary`}
               >
-                <option value="">-- Selecteer model --</option>
+                <option value="">{t('selectModel')}</option>
                 {availableModels.map(m => (
                   <option key={m} value={m}>{m}</option>
                 ))}
@@ -152,7 +154,7 @@ export default function AssetForm({ onSubmit }) {
                 type="text"
                 value={form.model}
                 onChange={e => update('model', e.target.value)}
-                placeholder={form.brand ? 'Voer model in' : 'Selecteer eerst een merk'}
+                placeholder={form.brand ? t('enterModel') : t('selectBrandFirst')}
                 disabled={!form.brand}
                 className={`w-full rounded-lg border ${errors.model ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary disabled:bg-gray-100 disabled:text-gray-400`}
               />
@@ -164,13 +166,13 @@ export default function AssetForm({ onSubmit }) {
         {/* Bouwjaar & Draaiuren */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-ntab-text mb-1">Bouwjaar *</label>
+            <label className="block text-sm font-medium text-ntab-text mb-1">{t('buildYear')} *</label>
             <select
               value={form.year}
               onChange={e => update('year', e.target.value)}
               className={`w-full rounded-lg border ${errors.year ? 'border-red-500' : 'border-ntab-border'} px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary`}
             >
-              <option value="">-- Selecteer jaar --</option>
+              <option value="">{t('selectYear')}</option>
               {years.map(y => (
                 <option key={y} value={y}>{y}</option>
               ))}
@@ -179,7 +181,7 @@ export default function AssetForm({ onSubmit }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ntab-text mb-1">Draaiuren / KM-stand</label>
+            <label className="block text-sm font-medium text-ntab-text mb-1">{t('hours')}</label>
             <input
               type="number"
               value={form.hours}
@@ -195,7 +197,7 @@ export default function AssetForm({ onSubmit }) {
       <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
         <h2 className="text-base sm:text-lg font-semibold text-ntab-primary mb-4 flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          Conditiebeoordeling
+          {t('conditionAssessment')}
         </h2>
 
         {/* Professional condition scale bar */}
@@ -221,7 +223,7 @@ export default function AssetForm({ onSubmit }) {
                   <div className={`text-xs font-bold mb-0.5 ${isSelected ? 'text-white/80' : 'text-ntab-text-light'}`}>
                     {c.value}
                   </div>
-                  <div className="text-[11px] sm:text-xs leading-tight">{c.label}</div>
+                  <div className="text-[11px] sm:text-xs leading-tight">{t('condition' + c.value)}</div>
                 </button>
               )
             })}
@@ -245,10 +247,10 @@ export default function AssetForm({ onSubmit }) {
           </div>
           <div>
             <div className="text-sm font-medium text-ntab-text">
-              {conditionLabels.find(c => c.value === form.condition)?.label}
+              {t('condition' + form.condition)}
             </div>
             <div className="text-xs text-ntab-text-light mt-0.5">
-              {conditionLabels.find(c => c.value === form.condition)?.description}
+              {t('conditionDesc' + form.condition)}
             </div>
           </div>
         </div>
@@ -262,12 +264,12 @@ export default function AssetForm({ onSubmit }) {
 
       {/* Notities */}
       <div className="bg-white rounded-xl shadow-sm border border-ntab-border p-4 sm:p-6 hover:shadow-md transition-shadow">
-        <label className="block text-sm font-medium text-ntab-text mb-1">Aanvullende opmerkingen</label>
+        <label className="block text-sm font-medium text-ntab-text mb-1">{t('additionalNotes')}</label>
         <textarea
           value={form.notes}
           onChange={e => update('notes', e.target.value)}
           rows={3}
-          placeholder="Bijzonderheden, opties, accessoires..."
+          placeholder={t('notesPlaceholder')}
           className="w-full rounded-lg border border-ntab-border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ntab-secondary resize-none"
         />
       </div>
@@ -278,7 +280,7 @@ export default function AssetForm({ onSubmit }) {
         className="w-full bg-ntab-accent hover:bg-orange-800 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-        Start Marktanalyse
+        {t('startAnalysis')}
       </button>
     </form>
   )
