@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none">
+  <rect x="1" y="1" width="58" height="58" rx="10" fill="#003399"/>
+  <rect x="1" y="1" width="58" height="58" rx="10" stroke="#0055BB" stroke-width="1"/>
+  <text x="30" y="30" text-anchor="middle" dominant-baseline="central" font-family="'Segoe UI','Arial',sans-serif" font-size="16" font-weight="800" fill="white" letter-spacing="2">NTAB</text>
+  <rect x="10" y="39" width="40" height="2.5" rx="1.25" fill="#E05500"/>
+  <text x="30" y="51" text-anchor="middle" font-family="'Segoe UI','Arial',sans-serif" font-size="5.5" fill="rgba(255,255,255,0.6)" letter-spacing="1.5">SINDS 1904</text>
+</svg>
