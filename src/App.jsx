@@ -38,13 +38,19 @@ export default function App() {
   const [showHelp, setShowHelp] = useState(false)
   const [sessionRestored, setSessionRestored] = useState(false)
 
-  // Restore session from localStorage
+  // Restore session from localStorage + first visit check
   useEffect(() => {
     const saved = loadSession()
     if (saved?.completedAssets?.length > 0) {
       setCompletedAssets(saved.completedAssets)
       setSessionRestored(true)
       setTimeout(() => setSessionRestored(false), 3000)
+    }
+    // Show help on first visit
+    const hasVisited = localStorage.getItem('ntab-taxatool-visited')
+    if (!hasVisited) {
+      setShowHelp(true)
+      localStorage.setItem('ntab-taxatool-visited', '1')
     }
   }, [])
 
@@ -174,7 +180,9 @@ export default function App() {
                         : 'text-ntab-text-light bg-gray-50 border border-gray-200 cursor-not-allowed'
                   }`}
                 >
-                  <span>{step.icon}</span>
+                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-bold shrink-0 ${
+                    i === currentStep ? 'bg-white/25 text-white' : i < currentStep ? 'bg-ntab-primary text-white' : 'bg-gray-200 text-gray-500'
+                  }`}>{i + 1}</span>
                   <span className="hidden sm:inline">{step.label}</span>
                 </button>
                 {i < steps.length - 1 && (
