@@ -140,4 +140,62 @@ CREATE INDEX idx_taxaties_datum ON taxaties(datum DESC);
 ALTER TABLE taxaties ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Taxaties zijn leesbaar" ON taxaties FOR SELECT USING (true);
 CREATE POLICY "Taxaties schrijven met auth" ON taxaties FOR INSERT WITH CHECK (true);
+
+-- ══════════════════════════════════════════════════════════════
+-- EXTERNAL SOURCES TRACKING
+-- ══════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS external_sources (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  type TEXT NOT NULL,  -- 'api', 'scraper', 'xml_feed', 'manual'
+  base_url TEXT,
+  last_sync TIMESTAMPTZ,
+  status TEXT DEFAULT 'active',  -- 'active', 'paused', 'error'
+  config JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seed initial sources
+INSERT INTO external_sources (name, type, base_url, config) VALUES
+  ('Apify Troostwijk', 'scraper', 'https://api.apify.com/v2',
+   '{"actor": "lexis-solutions/troostwijkauctions-com-scraper"}'),
+  ('Apify Mascus Details', 'scraper', 'https://api.apify.com/v2',
+   '{"actor": "ecomscrape/mascus-vehicle-details-scraper"}'),
+  ('Apify Mascus Search', 'scraper', 'https://api.apify.com/v2',
+   '{"actor": "ecomscrape/mascus-vehicles-search-scraper"}'),
+  ('TBAuctions ATLAS', 'api', 'https://api.tbauctions.com',
+   '{"endpoints": ["items", "categories", "orders"]}'),
+  ('Mascus XML Feed', 'xml_feed', 'https://export.mascus.com',
+   '{"format": "XML"}'),
+  ('Ritchie Bros', 'manual', 'https://www.rbauction.com/price-results', '{}'),
+  ('Sandhills VIP', 'manual', 'https://www.machinerytrader.com',
+   '{"daily_limit": 5}');
+
+-- ══════════════════════════════════════════════════════════════
+-- MARKET CACHE (scraped results with TTL)
+-- ══════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS market_cache (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_id UUID REFERENCES external_sources(id),
+  query_hash TEXT NOT NULL,           -- SHA256 of search params
+  query_params JSONB NOT NULL,        -- Original search params
+  results JSONB NOT NULL,             -- Array of normalized results
+  result_count INTEGER DEFAULT 0,
+  fetched_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ DEFAULT NOW() + INTERVAL '24 hours'
+);
+
+CREATE INDEX idx_market_cache_query ON market_cache(query_hash);
+CREATE INDEX idx_market_cache_expires ON market_cache(expires_at);
+CREATE INDEX idx_market_cache_source ON market_cache(source_id);
+
+-- Auto-cleanup expired cache entries
+CREATE OR REPLACE FUNCTION cleanup_expired_cache()
+RETURNS void AS $$
+BEGIN
+  DELETE FROM market_cache WHERE expires_at < NOW();
+END;
+$$ LANGUAGE plpgsql;
 `
